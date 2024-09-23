@@ -15,9 +15,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.contrib.admin.views.decorators import staff_member_required
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
+admin.site.login = staff_member_required(admin.site.login, login_url='/admin/login/')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/', include('campaigns.urls')),
     path('api/users/', include('users.urls')),
 ]
